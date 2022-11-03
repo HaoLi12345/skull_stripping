@@ -11,3 +11,5 @@
   organization={SPIE}
 }
 ```
+
+Change paths for train and validation sets, and it is ready to run.
