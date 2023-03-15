@@ -13,3 +13,6 @@
 ```
 
 Change paths for train and validation sets, and it is ready to run.
+
+resume = True ---> continue train from a checkpoint
+prefix ---> prefix of saving filename
