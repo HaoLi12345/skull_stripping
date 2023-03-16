@@ -1,0 +1,4 @@
+torchio==0.18.77
+torch>=1.10.1+cu113
+pandas
+connected-components-3d
