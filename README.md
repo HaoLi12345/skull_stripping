@@ -29,7 +29,7 @@ train_set_image_path <br />
 └── 100.nii.gz (bunch of nifti files in a folder) <br />
 
 
-same for other folders. the order should be matched for image and label folder <br />
+same for other folders. the order should be matched for nifti files image and label folders <br />
 train_set_label_path <br />
 ├── 1_label.nii.gz <br />
 └── 2_label.nii.gz <br />
