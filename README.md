@@ -12,21 +12,21 @@
 }
 ```
 
-installation (need to create a new environment if you don't want to install those in base)
-   pip install -r /PATH/requirements.txt
+installation (need to create a new environment if you don't want to install those in base) <br />
+pip install -r /PATH/requirements.txt <br />
 
 
 
-Change paths for train and validation sets, and it is ready to run.
-example:
-train_set_image_path
-├── 1.nii.gz
-└── 2.nii.gz
-...
-...
-...
-...
-└── 100.nii.gz (bunch of nifti files in a folder)
+Change paths for train and validation sets, and it is ready to run. <br />
+example: <br />
+train_set_image_path <br />
+├── 1.nii.gz <br />
+└── 2.nii.gz <br />
+... <br />
+... <br />
+... <br />
+... <br />
+└── 100.nii.gz (bunch of nifti files in a folder) <br />
 
 
 same for other folders. the order should be matched for image and label folder
