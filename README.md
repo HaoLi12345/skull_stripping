@@ -11,11 +11,11 @@
   organization={SPIE}
 }
 ```
-############
+
 installation (need to create a new environment if you don't want to install those in base)
    pip install -r /PATH/requirements.txt
 
-############
+
 
 Change paths for train and validation sets, and it is ready to run.
 example:
@@ -40,7 +40,7 @@ train_set_label_path
 └── 100_label.nii.gz (bunch of nifti files in a folder)
 
 
-############
+
 
 
 It shows like below during training:
@@ -59,7 +59,7 @@ first number is the current epoch number and second number is current iteration 
 
 
 
-############
+
 resume = True ---> continue train from a checkpoint
 prefix ---> prefix of saving name. For example, currently in code: prefix='test_123', please also check the folders in ./src/outputFiles
 
