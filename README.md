@@ -13,7 +13,7 @@
 ```
 
 installation (need to create a new environment if you don't want to install those in base) <br />
-pip install -r /PATH/requirements.txt <br />
+pip install -r /PATH/AGS/src/requirements.txt <br />
 
 
 
