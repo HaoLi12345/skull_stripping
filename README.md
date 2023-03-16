@@ -29,39 +29,39 @@ train_set_image_path <br />
 └── 100.nii.gz (bunch of nifti files in a folder) <br />
 
 
-same for other folders. the order should be matched for image and label folder
-train_set_label_path
-├── 1_label.nii.gz
-└── 2_label.nii.gz
-...
-...
-...
-...
-└── 100_label.nii.gz (bunch of nifti files in a folder)
+same for other folders. the order should be matched for image and label folder <br />
+train_set_label_path <br />
+├── 1_label.nii.gz <br />
+└── 2_label.nii.gz <br />
+... <br />
+... <br />
+... <br />
+... <br />
+└── 100_label.nii.gz (bunch of nifti files in a folder) <br />
 
 
 
 
 
-It shows like below during training:
+It shows like below during training: <br />
 
-[1,     1] loss: 0.83022 
-[1,     2] loss: 0.75864 
-[1,     3] loss: 0.63397 
-[1,     4] loss: 0.54031 
-[1,     5] loss: 0.55116 
-[1,     6] loss: 0.59595 
-...
-...
-...
+[1,     1] loss: 0.83022  <br />
+[1,     2] loss: 0.75864  <br />
+[1,     3] loss: 0.63397  <br />
+[1,     4] loss: 0.54031  <br />
+[1,     5] loss: 0.55116  <br />
+[1,     6] loss: 0.59595  <br />
+... <br />
+... <br />
+... <br />
 
-first number is the current epoch number and second number is current iteration number
-
-
+first number is the current epoch number and second number is current iteration number <br />
 
 
-resume = True ---> continue train from a checkpoint
-prefix ---> prefix of saving name. For example, currently in code: prefix='test_123', please also check the folders in ./src/outputFiles
+
+
+resume = True ---> continue train from a checkpoint <br />
+prefix ---> prefix of saving name. For example, currently in code: prefix='test_123', please also check the folders in ./src/outputFiles <br />
 
 
 
