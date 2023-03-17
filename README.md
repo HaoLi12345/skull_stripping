@@ -13,7 +13,7 @@
 ```
 
 installation (need to create a new environment if you don't want to install those in base) <br />
-pip install -r /PATH/AGS/src/requirements.txt <br />
+pip install -r /PATH/requirements.txt <br />
 
 
 
@@ -29,7 +29,7 @@ train_set_image_path <br />
 └── 100.nii.gz (bunch of nifti files in a folder) <br />
 
 
-same for other folders. the order should be matched for nifti files image and label folders <br />
+same for other folders. the order should be matched for image and label folder <br />
 train_set_label_path <br />
 ├── 1_label.nii.gz <br />
 └── 2_label.nii.gz <br />
@@ -63,6 +63,12 @@ first number is the current epoch number and second number is current iteration 
 resume = True ---> continue train from a checkpoint <br />
 prefix ---> prefix of saving name. For example, currently in code: prefix='test_123', please also check the folders in ./src/outputFiles <br />
 
+
+
+Please put the pretrained model (if you have) under the folder ./src/outputFiles/Networks_123 <br />
+
+
+Simply change the directories for running pre-processing <br />
 
 
 
