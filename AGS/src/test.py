@@ -59,9 +59,9 @@ def initialization(test_image_dir, test_label_dir, test_roi_dir, model_dir, epoc
             model = vanila_3dunet.Unet3d_vanila(1, nClass, f_maps=16)
         else:
             model = subcortical_seg_model.Unet3d(1, nClass, layer_order='cbr', basic_module_encoder=basic_module_encoder, basic_module_decoder=basic_module_decoder, num_levels=5,
-                                             f_maps=[16, 32, 64, 64, 128])
+                                             f_maps=16)
     model.cuda()
-    # print(model)
+    #print(model)
 
     epoch_name = sorted(os.listdir(model_dir))[epoch_index]
     path = os.path.join(model_dir, epoch_name)
@@ -103,6 +103,36 @@ def check_cc(cc_list, nClass):
             print('index:' + str(i) + 'has more/less than ' + str(nClass-1) + ' connected components, found ' + str(cc_list[i]))
             error_list.append(i)
     return error_list
+
+def largest_cc(label):
+    # keep largest cc(connected components) for 8 subcortical structures
+    final_label = np.zeros(label.shape)
+    for structure_index in range(1, 9):
+        label_temp = np.zeros(label.shape, dtype=int)
+        label_temp[label == structure_index] = 1
+        # keep largest cc
+        connectivity = 6  # only 26, 18, and 6 are allowed
+        labels_out = cc3d.connected_components(label_temp, connectivity=connectivity)
+        N_label = np.max(labels_out)
+
+        volume_list = []
+        index_list = []
+        for i in range(1, N_label + 1):
+            voxel_amount = np.count_nonzero(labels_out == i)
+            volume_list.append(voxel_amount)
+            index_list.append(i)
+        if len(volume_list) > 0:
+            volume_list_array = np.asarray(volume_list)
+            largest_label_volume = volume_list_array.max()
+            largest_label_index = volume_list.index(largest_label_volume)
+            label_number_from_cc = index_list[largest_label_index]
+            # You can extract individual components like so:
+            # labels_output is a binary image with value 0 and label_number_from_cc
+            label_output = labels_out * (labels_out == label_number_from_cc)
+            label_output[labels_out == label_number_from_cc] = structure_index
+            final_label[label_output == structure_index] = structure_index
+            # final_label = final_label + label_output
+    return final_label
 
 
 def test(model, test_loader, loss_criterion, testing_saving_dir, nClass, print_dice=True):
@@ -146,10 +176,11 @@ def test(model, test_loader, loss_criterion, testing_saving_dir, nClass, print_d
             image_name = labels_dict['image_name'][0]
             _, label_data = Utils.load_nii(label_dir, label_name)
             _, image_data = Utils.load_nii(image_dir, image_name)
+
+            #numpy_predicted = largest_cc(numpy_predicted)
             Utils.save_nii(numpy_predicted, image_data, testing_saving_dir, 'Segmentation_' + image_name)
             connected_component.append(get_cc_number(numpy_predicted))
             if print_dice:
-
                 dice_array = Utils.computeDice(numpy_predicted, numpy_label)
                 for d_i in range(len(dice_array)):
                     print(" -------------- DSC (Class {}) : {}".format(str(d_i + 1), dice_array[d_i]))
@@ -243,7 +274,7 @@ def make_csv(seg_dir, label_dir, saving_dir, saving_name, mode, prefix=False, HD
     for i in reversed(range(0, len(seg_list))):
         name = seg_list[i]
         name_split = name.split('_')
-        if name_split[2] == 'LD':
+        if name_split[2] == 'LD' and HD:
             seg_list.pop(i)
     label_list = sorted(os.listdir(label_dir))
 
@@ -374,21 +405,11 @@ def make_csv(seg_dir, label_dir, saving_dir, saving_name, mode, prefix=False, HD
 
     else:
         for seg_name in seg_list:
-            seg_name_split = seg_name.split('.')[0]
-            prefix_seg_name = seg_name_split.split('_')
-            if prefix:
-                external_id_seg = prefix_seg_name[2]
-                scan_id_seg = prefix_seg_name[4]
-            else:
-                external_id_seg = prefix_seg_name[1]
-                scan_id_seg = prefix_seg_name[3]
-            for label_name in label_list:
-                label_name_split = label_name.split('.')[0]
-                prefix_label_name = label_name_split.split('_')
-                external_id_label = prefix_label_name[1]
-                scan_id_label = prefix_label_name[3]
-                if external_id_seg == external_id_label and int(scan_id_seg) == int(scan_id_label):
+            seg_name_split = seg_name.split('_')[2] +'_'+ seg_name.split('_')[3] +'_'+ seg_name.split('_')[4]
 
+            for label_name in label_list:
+                label_name_split = label_name.split('_')[0] +'_'+ label_name.split('_')[1] +'_'+ label_name.split('_')[2]
+                if seg_name_split == label_name_split:
                     image_name_list.append(seg_name)
 
                     segmentation, _ = Utils.load_nii(seg_dir, seg_name)
@@ -401,14 +422,15 @@ def make_csv(seg_dir, label_dir, saving_dir, saving_name, mode, prefix=False, HD
                     N = np.max(cc_seg)
                     connected_component.append(N)
 
-                    ASD_array = Utils.compute_ASD(segmentation, label, spacing_mm=(1.0, 1.0, 1.0), pred_to_gt=True)
-                    sd1.append(ASD_array[0])
+                    # ASD_array = Utils.compute_ASD(segmentation, label, spacing_mm=(1.0, 1.0, 1.0), pred_to_gt=True)
+                    # sd1.append(ASD_array[0])
+                    #
+                    #
+                    # HD_array = Utils.compute_HD(segmentation, label, spacing_mm=(1.0, 1.0, 1.0), percentage=95)
+                    # hd1.append(HD_array[0])
 
 
-                    HD_array = Utils.compute_HD(segmentation, label, spacing_mm=(1.0, 1.0, 1.0), percentage=95)
-                    hd1.append(HD_array[0])
-
-
+                    # segmentation = largest_cc(segmentation)
 
                     dice_array = Utils.computeDice(segmentation, label)
                     dice1.append(dice_array[0])
@@ -447,9 +469,9 @@ def make_csv(seg_dir, label_dir, saving_dir, saving_name, mode, prefix=False, HD
                    'connected_component': connected_component,
                    'dice1': dice1,
 
-                   'asd1': sd1,
-
-                   'hd1': hd1,
+                   # 'asd1': sd1,
+                   #
+                   # 'hd1': hd1,
 
 
                    }
@@ -459,9 +481,9 @@ def make_csv(seg_dir, label_dir, saving_dir, saving_name, mode, prefix=False, HD
                                            'connected_component',
                                            'dice1',
 
-                                           'asd1',
-
-                                           'hd1',
+                                           # 'asd1',
+                                           #
+                                           # 'hd1',
 
                                            ])
     print(new_df)
@@ -475,24 +497,26 @@ if __name__ == '__main__':
 
 
 
-    test_image_dir = '/media/hao/easystore/subcortical_segmentation/2021_summer/Hao/AGS_cycleGAN/Dataset/new_train/vali_image'
-    test_label_dir = '/media/hao/easystore/subcortical_segmentation/2021_summer/Hao/AGS_cycleGAN/Dataset/new_train/vali_label'
+    test_image_dir = ''
+    test_label_dir = ''
     test_roi_dir = test_label_dir
 
-    prefix = 'example_model'
+    prefix = '123'
     canny = False
     vanila = False
 
     saving_scv_name = prefix
     nClass = 2
     epoch_index = 0
-    saving_scv_dir = '/home/hao/Hao/AGS/src/result_csv'
+    saving_scv_dir = './result_csv'
+    if not os.path.exists(saving_scv_dir):
+        os.makedirs(saving_scv_dir)
     output_dir, model_dir, prediction_dir, testing_saving_dir, validation_saving_dir = creater_outputs_folders(prefix=prefix)
     model, loss_criterion, optimizer, test_loader = initialization(test_image_dir, test_label_dir, test_roi_dir, model_dir,
                                                                    epoch_index, nClass, basic_module_encoder=ExtResNetBlock, basic_module_decoder=ExtResNetBlock, canny=canny, vanila=vanila)
     test_loss, connected_component, error_cc_index = test(model, test_loader, loss_criterion, testing_saving_dir, nClass,
-                                                          print_dice=False)
+                                                           print_dice=False)
 
-
+    #testing_saving_dir = '/media/hao/easystore/subcortical_segmentation/2021_summer/Hao/AGS_cycleGAN/src/spie2022/outputFiles_spie2022/Prediction_agsnet_norm_no_aug/testing'
     # make_csv(testing_saving_dir, test_label_dir,
-    #          saving_scv_dir, saving_scv_name, mode='cape', prefix=True, HD=True, date_on_file=True)
+    #          saving_scv_dir, saving_scv_name, mode='cape', prefix=False, HD=False, date_on_file=False)

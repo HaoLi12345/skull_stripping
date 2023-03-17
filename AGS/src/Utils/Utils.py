@@ -116,53 +116,7 @@ def split_training_validation(image_list, validation_index):
 
 
 
-# def compute_ASD(seg, gt, spacing_mm=(1.0, 1.0, 1.0), pred_to_gt=True):
-#     n_classes = int(np.max(gt) + 1)
-#
-#     ASDarray = []
-#
-#     for c_i in range(1, n_classes):
-#
-#         mask_pred = np.zeros(seg.shape, dtype=np.bool)
-#         mask_pred[seg == c_i] = 1
-#
-#
-#         mask_gt = np.zeros(gt.shape, dtype=np.bool)
-#         mask_gt[gt == c_i] = 1
-#
-#         surface_distances = compute_surface_distances(
-#             mask_gt, mask_pred, spacing_mm=spacing_mm)
-#         avg_surf_dist = compute_average_surface_distance(surface_distances)
-#         if pred_to_gt:
-#             ASDarray.append(avg_surf_dist[1])
-#         else:
-#             ASDarray.append(avg_surf_dist[0])
-#
-#     return ASDarray
-#
-#
-# def compute_HD(seg, gt, spacing_mm=(1.0, 1.0, 1.0), percentage=100):
-#     n_classes = int(np.max(gt) + 1)
-#
-#     HDarray = []
-#
-#     for c_i in range(1, n_classes):
-#
-#         mask_pred = np.zeros(seg.shape, dtype=np.bool)
-#         mask_pred[seg == c_i] = 1
-#
-#
-#         mask_gt = np.zeros(gt.shape, dtype=np.bool)
-#         mask_gt[gt == c_i] = 1
-#
-#         surface_distances = compute_surface_distances(
-#             mask_gt, mask_pred, spacing_mm=spacing_mm)
-#         hd_surf_dist = compute_robust_hausdorff(surface_distances, percentage)
-#
-#         HDarray.append(hd_surf_dist)
-#
-#
-#     return HDarray
+
 
 def computeDice(autoSeg, groundTruth):
     """ Returns
