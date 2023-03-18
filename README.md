@@ -72,6 +72,6 @@ Simply change the directories for running pre-processing <br />
 
 
 
-
+for better performance (since our model is trained with few subjects): you can run preprocessing steps first --> rigistration -- N4 (optional) -- rigistrtion (optional) -- histogram matching
 
 
